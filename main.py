@@ -1,9 +1,10 @@
 from fastapi import FastAPI, Query
 from fastapi.middleware.cors import CORSMiddleware
 
-from services.openmeteo.OpenMeteoService import OpenMeteoService
+from services.openmeteo.WeatherService import WeatherService
 from services.nominatim.NominatimService import NominatimService
 
+from datetime import date
 
 app = FastAPI()
 
@@ -27,7 +28,7 @@ def get_dashboard(lat: float = Query(..., description="Latitude"), lon: float = 
     dashboard_data = {
         "data": {
             "location_card": NominatimService.LocationData(lat, lon),
-            "hourly_data": OpenMeteoService.get_hourly_data(lat, lon)
+            "hourly_data": WeatherService.get_hourly_data(lat, lon)
         }
     }
     return dashboard_data

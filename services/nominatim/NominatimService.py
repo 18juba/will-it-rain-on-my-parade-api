@@ -24,16 +24,4 @@ class NominatimService:
         result = NominatimService.reverse_geocode(lat, lon)
         address = result.get("address", {})
 
-        country = address.get("country")
-        state = address.get("state")
-        city = address.get("city") or address.get("town") or address.get("village") or address.get("municipality")
-        extra = result.get("display_name")
-
-        location_data = {
-            "country": country if country else None,
-            "state": state if state else None,
-            "city": city if city else None,
-            "extra": extra if extra else None
-        }
-
-        return location_data
+        return address

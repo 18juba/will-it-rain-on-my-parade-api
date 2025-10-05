@@ -4,7 +4,9 @@ import requests_cache
 from retry_requests import retry
 from .config import OPEN_METEO_BASE_URL
 
-class OpenMeteoService:
+from datetime import date
+
+class WeatherService:
 
     @staticmethod
     def get_hourly_data(lat: float, lon: float):
@@ -51,3 +53,20 @@ class OpenMeteoService:
         df = pd.DataFrame(data)
         df = df.where(pd.notnull(df), 0)
         return df.to_dict(orient="records")
+    
+    def detect_extreme_events(hourly_data):
+        alerts = []
+        for d in hourly_data:
+            event_list = []
+            if d["temperature_2m"] is not None and d["temperature_2m"] > 35:
+                event_list.append("Heatwave")
+            if d["rain"] is not None and d["rain"] > 10:
+                event_list.append("Heavy rain")
+            if d["wind_speed_10m"] is not None and d["wind_speed_10m"] > 15:
+                event_list.append("Strong wind")
+            if event_list:
+                alerts.append({"datetime": d["date"], "events": event_list})
+        return alerts
+    
+    def WeatherData(lat, lon, date: date):
+        
