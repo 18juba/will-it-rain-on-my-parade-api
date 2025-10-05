@@ -29,7 +29,9 @@ def get_dashboard(
     end_date: str = Query(..., description="Final Date (YYYYMMDD)")
 ):
     dashboard_data = {
-        "data": {
+        "dashboard": {
+            "start_date": start_date,
+            "end_date": end_date,
             "location_card": NominatimService.LocationData(lat, lon),
             "weather": WeatherService.WeatherData(lat, lon, start_date, end_date)
         }
