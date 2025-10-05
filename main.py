@@ -1,7 +1,18 @@
 from fastapi import FastAPI, Query
+from fastapi.middleware.cors import CORSMiddleware
+
+from services.openmeteo.OpenMeteoService import OpenMeteoService
 from services.nominatim.NominatimService import NominatimService
 
+
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 @app.get("/local_info")
 def get_local_info(lat: str = Query(..., description="Latitude"), lon: str = Query(..., description="Longitude")):
@@ -12,10 +23,11 @@ def get_local_info(lat: str = Query(..., description="Latitude"), lon: str = Que
 
 
 @app.get("/dashboard")
-def get_dashboard(lat: str = Query(..., description="Latitude"), lon: str = Query(..., description="Longitude")):
+def get_dashboard(lat: float = Query(..., description="Latitude"), lon: float = Query(..., description="Longitude")):
     dashboard_data = {
         "data": {
             "location_card": NominatimService.LocationData(lat, lon),
+            "hourly_data": OpenMeteoService.get_hourly_data(lat, lon)
         }
     }
     return dashboard_data
