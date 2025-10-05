@@ -1,1 +1,1 @@
-OPEN_METEO_BASE_URL = "https://api.open-meteo.com/v1/forecast"
+POWER_NASA_URL = "https://power.larc.nasa.gov/api/temporal/daily/point"

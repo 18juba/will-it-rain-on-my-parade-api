@@ -4,8 +4,6 @@ from fastapi.middleware.cors import CORSMiddleware
 from services.openmeteo.WeatherService import WeatherService
 from services.nominatim.NominatimService import NominatimService
 
-from datetime import date
-
 app = FastAPI()
 
 app.add_middleware(
@@ -24,11 +22,16 @@ def get_local_info(lat: str = Query(..., description="Latitude"), lon: str = Que
 
 
 @app.get("/dashboard")
-def get_dashboard(lat: float = Query(..., description="Latitude"), lon: float = Query(..., description="Longitude")):
+def get_dashboard(
+    lat: float = Query(..., description="Latitude"),
+    lon: float = Query(..., description="Longitude"),
+    start_date: str = Query(..., description="Initial Date (YYYYMMDD)"),
+    end_date: str = Query(..., description="Final Date (YYYYMMDD)")
+):
     dashboard_data = {
         "data": {
             "location_card": NominatimService.LocationData(lat, lon),
-            "hourly_data": WeatherService.get_hourly_data(lat, lon)
+            "weather": WeatherService.WeatherData(lat, lon, start_date, end_date)
         }
     }
     return dashboard_data
